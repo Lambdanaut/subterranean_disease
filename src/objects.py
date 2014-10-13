@@ -9,6 +9,8 @@ class Object(object):
 
 
 class Player(Object):
+    speed = 6
+
     def __init__(self, left=100, top=100):
         super(Player, self).__init__()
 

@@ -5,7 +5,9 @@ import sys
 import pygame
 from pygame.locals import *
 
+from graphics import NEUTRAL, WALKING
 from objects import Player
+from settings import MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT
 
 
 class Scene(object):
@@ -38,7 +40,7 @@ class Ingame(Scene):
     def __init__(self, game):
         super(Ingame, self).__init__(game)
 
-        self.h = Player()
+        self.p = Player()
 
     def main_loop(self):
         self.get_player_input()
@@ -46,40 +48,48 @@ class Ingame(Scene):
         self.draw()
 
     def get_player_input(self):
-        key = pygame.key.get_pressed()
+        # New input events
         for event in pygame.event.get():
-            if event.type == QUIT or key[K_ESCAPE]:
+            if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
 
-            # Player movement
+            # Player movement events
             elif event.type == KEYDOWN:
-                pass
-                # if (event.key in [K_UP, K_RIGHT, K_DOWN, K_LEFT]):
+                if event.key == MOVE_UP or event.key == MOVE_RIGHT or event.key == MOVE_DOWN or event.key == MOVE_LEFT:
+                    self.p.gfx.set_state(WALKING)
+
 
         # Player orientation
         (mx, my) = pygame.mouse.get_pos()
 
-        self.h.gfx.d = \
-            math.degrees(math.atan2(mx - self.h.rect.left, my - self.h.rect.top))
+        self.p.gfx.orientation = \
+            math.degrees(math.atan2(mx - self.p.rect.left, my - self.p.rect.top))
 
+        key = pygame.key.get_pressed()
+
+        # Player movement
         to_move_x = 0
         to_move_y = 0
-        if key[K_UP]:
-            to_move_y -= 5
-        if key[K_RIGHT]:
-            to_move_x += 5
-        if key[K_DOWN]:
-            to_move_y += 5
-        if key[K_LEFT]:
-            to_move_x -= 5
+        if key[MOVE_UP]:
+            to_move_y -= self.p.speed
+        if key[MOVE_RIGHT]:
+            to_move_x += self.p.speed
+        if key[MOVE_DOWN]:
+            to_move_y += self.p.speed
+        if key[MOVE_LEFT]:
+            to_move_x -= self.p.speed
 
         if to_move_x or to_move_y:
-            self.h.gfx.state = 'walking'
-            self.h.rect.top += to_move_y
-            self.h.rect.left += to_move_x
+            self.p.rect.top += to_move_y
+            self.p.rect.left += to_move_x
         else:
-            self.h.gfx.state = 'neutral'
+            self.p.gfx.set_state(NEUTRAL)
+
+        # TODO: Menu
+        if key[K_ESCAPE]:
+            pygame.quit()
+            sys.exit()
 
     def calculate(self):
         self.calculate_player()
@@ -109,6 +119,5 @@ class Ingame(Scene):
         pass
 
     def draw_player(self):
-        self.h.gfx.draw(self.game.screen.surface)
+        self.p.gfx.draw(self.game.screen.surface)
         pass
-

@@ -6,13 +6,18 @@ from pygame import Rect
 from settings import VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT
 from settings import ANIMATION_LAG_2, ANIMATION_LAG_3, ANIMATION_LAG_4
 
+NEUTRAL = 0
+WALKING = 1
 
 class GFX(object):
-    def __init__(self, rect):
+    def __init__(self, rect, state, lag):
         self.surface = pygame.Surface((VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT))
 
+        self.state = state
+        self.lag = lag
+
         self.frame = 0
-        self.d = 0
+        self.orientation = 0
         self.rect = rect
 
     def draw(self, screen):
@@ -25,7 +30,7 @@ class GFX(object):
         for rect, color in cur_frame:
             pygame.draw.rect(self.surf, color, rect)
 
-        rotated_surf = pygame.transform.rotate(self.surf, self.d)
+        rotated_surf = pygame.transform.rotate(self.surf, self.orientation)
 
         rotated_rect = rotated_surf.get_rect()
         rotated_rect.center = (self.rect.left, self.rect.top)
@@ -34,23 +39,24 @@ class GFX(object):
 
         self.frame += 1
 
+    def set_state(self, state=NEUTRAL):
+        if self.state != state:
+            self.frame = 0
+            self.state = state
 
 class HumanoidGFX(GFX):
     def __init__(self,
         rect,
-        state='neutral',
+        state=NEUTRAL,
         lag=ANIMATION_LAG_4,
         head_color=None,
         body_color=None,
         hair_color=None):
 
-        super(HumanoidGFX, self).__init__(rect)
-
-        self.state = state
-        self.lag = lag
+        super(HumanoidGFX, self).__init__(rect, state, lag)
 
         self.body_color = body_color or \
-            Color(200, 25, 25)
+            Color(150, 25, 25)
         self.head_color = head_color or \
             Color(239, 208, 207)
         self.hair_color = hair_color or \
@@ -64,14 +70,14 @@ class HumanoidGFX(GFX):
         self.hair2_rect = Rect(25, 44, 30, 30)
 
         self.frames = {
-            'neutral': [
+            NEUTRAL: [
                 [
                     (self.body1_rect, self.body_color),
                     (self.head1_rect, self.head_color),
                     (self.hair1_rect, self.hair_color),
                 ],
             ],
-            'walking': [
+            WALKING: [
                 [
                     (self.body1_rect, self.body_color),
                     (self.head1_rect, self.head_color),

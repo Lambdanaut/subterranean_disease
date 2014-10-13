@@ -3,7 +3,7 @@ if sys.platform == 'win32' or sys.platform == 'win64':
     os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 from settings import GAME_NAME, GAME_AUTHOR, GAME_VERSION
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_FPS
+from settings import SCREEN_RESOLUTION, SCREEN_DISPLAY, SCREEN_FPS
 
 import scenes
 
@@ -29,14 +29,18 @@ class Game(object):
 
     class Screen(object):
         def __init__(self):
-            self.width = SCREEN_WIDTH
-            self.height = SCREEN_HEIGHT
-            self.icon = self.Icon()
+            display_info = pygame.display.Info()
 
-            self.surface = pygame.display.set_mode((self.width, self.height))
+            self.resolution = SCREEN_RESOLUTION or \
+                (display_info.current_w, display_info.current_h)
+
+
+            self.surface = pygame.display.set_mode(self.resolution, SCREEN_DISPLAY)
 
             pygame.display.set_caption(
                 '{} - {} - v{}'.format(GAME_NAME, GAME_AUTHOR, GAME_VERSION))
+
+            self.icon = self.Icon()
 
 
         class Icon(object):
