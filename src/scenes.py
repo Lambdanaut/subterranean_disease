@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 
 from graphics import NEUTRAL, WALKING
+from level_maps import TestMap
 from objects import Player
 from settings import MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT
 
@@ -37,10 +38,13 @@ class Menu(Scene):
 
 
 class Ingame(Scene):
-    def __init__(self, game):
+    def __init__(self, game, level_map=None):
         super(Ingame, self).__init__(game)
 
-        self.p = Player()
+        self.p = Player(100, 700)
+        self.map = level_map or TestMap()
+
+        self.env = [obj for obj in self.map if obj and obj.obj_type == 'env']
 
     def main_loop(self):
         self.get_player_input()
@@ -96,14 +100,14 @@ class Ingame(Scene):
         self.calculate_env()
 
     def draw(self):
-        self.game.screen.surface.fill(Color(0,0,0))
+        self.game.screen.surface.fill(Color(150,150,150))
         self.draw_player()
         self.draw_npc()
         self.draw_env()
         pygame.display.update()
 
     def calculate_player(self):
-        self.p.update()
+        self.p.update(self.env)
 
     def calculate_npc(self):
         pass
@@ -112,11 +116,11 @@ class Ingame(Scene):
         pass
 
     def draw_env(self):
-        pass
+        for i in self.env:
+            i.gfx.draw(self.game.screen.surface)
 
     def draw_npc(self):
         pass
 
     def draw_player(self):
         self.p.gfx.draw(self.game.screen.surface)
-        pass

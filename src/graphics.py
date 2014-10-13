@@ -24,11 +24,15 @@ class GFX(object):
         self.surf.fill((0,0,0))
         self.surf.set_colorkey((0, 0, 0))
 
-        cur_frames = self.frames[self.state]
-        cur_frame = cur_frames[(self.frame // self.lag)  % (len(cur_frames))]
+        if type(self.frames) == tuple:
+            pygame.draw.rect(self.surf, self.frames[1], self.frames[0])
 
-        for rect, color in cur_frame:
-            pygame.draw.rect(self.surf, color, rect)
+        else:
+            cur_frames = self.frames[self.state]
+            cur_frame = cur_frames[(self.frame // self.lag)  % (len(cur_frames))]
+
+            for rect, color in cur_frame:
+                pygame.draw.rect(self.surf, color, rect)
 
         rotated_surf = pygame.transform.rotate(self.surf, self.orientation)
 
@@ -43,6 +47,26 @@ class GFX(object):
         if self.state != state:
             self.frame = 0
             self.state = state
+
+
+class WallGfx(GFX):
+    def __init__(self,
+        rect,
+        state=NEUTRAL,
+        lag=ANIMATION_LAG_4,
+        wall_color=None):
+
+        super(WallGfx, self).__init__(rect, state, lag)
+
+        self.wall_color = wall_color or \
+            Color(15, 15, 15)
+
+        self.wall_rect = Rect(0, 0, VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT)
+
+        self.frames = (self.wall_rect, self.wall_color)
+
+        self.surf = pygame.Surface((VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT))
+
 
 class HumanoidGFX(GFX):
     def __init__(self,
