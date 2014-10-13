@@ -1,34 +1,43 @@
 from pygame import Rect
 
 from graphics import PlayerGFX
-from util import add_vectors
+from util import Vec2d
 
 
 class Object(object):
     def __init__(self):
         pass
 
+
 class Lifeform(Object):
-    max_speed = 6
+    max_vel = Vec2d(10, 10)
+    friction = 0.9
 
     def __init__(self):
-        self.vel   = (0, 0)
-        self.accel = (0, 0)
+        self.vel   = Vec2d(0, 0)
 
     def update(self):
-        self.update_vel()
+        print(self.vel)
+        self.update_friction()
         self.update_pos()
 
     def update_pos(self):
-    	new_pos = add_vectors((self.rect.left, self.rect.top), self.vel)
-    	self.rect.left = new_pos[0]
-    	self.rect.top = new_pos[1]
+        new_pos = self.rect.topleft + self.vel
+        self.rect.topleft = new_pos
 
-    def update_vel(self):
-        self.vel = add_vectors(self.vel, self.accel)
+    def update_vel(self, other_vector=None):
+        if other_vector:
+            self.vel += other_vector
+            self.vel.restrain(self.max_vel)
+        else:
+            self.vel = Vec2d(0, 0)
 
-    def update_accel(self, move_vector):
-        self.accel = add_vectors(self.accel, move_vector)
+    def update_friction(self):
+        self.vel *= self.friction
+        if abs(self.vel.x) < 0.5:
+            self.vel.x = 0
+        if abs(self.vel.y) < 0.5:
+            self.vel.y = 0
 
 
 class Player(Lifeform):

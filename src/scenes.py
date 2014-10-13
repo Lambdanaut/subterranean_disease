@@ -81,7 +81,7 @@ class Ingame(Scene):
             to_move_x -= 1
 
         if to_move_x or to_move_y:
-            self.p.update_accel((to_move_x, to_move_y))
+            self.p.update_vel((to_move_x, to_move_y))
         else:
             self.p.gfx.set_state(NEUTRAL)
 
