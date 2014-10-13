@@ -72,17 +72,16 @@ class Ingame(Scene):
         to_move_x = 0
         to_move_y = 0
         if key[MOVE_UP]:
-            to_move_y -= self.p.speed
+            to_move_y -= 1
         if key[MOVE_RIGHT]:
-            to_move_x += self.p.speed
+            to_move_x += 1
         if key[MOVE_DOWN]:
-            to_move_y += self.p.speed
+            to_move_y += 1
         if key[MOVE_LEFT]:
-            to_move_x -= self.p.speed
+            to_move_x -= 1
 
         if to_move_x or to_move_y:
-            self.p.rect.top += to_move_y
-            self.p.rect.left += to_move_x
+            self.p.update_accel((to_move_x, to_move_y))
         else:
             self.p.gfx.set_state(NEUTRAL)
 
@@ -104,7 +103,7 @@ class Ingame(Scene):
         pygame.display.update()
 
     def calculate_player(self):
-        pass
+        self.p.update()
 
     def calculate_npc(self):
         pass
