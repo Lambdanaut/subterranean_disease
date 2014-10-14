@@ -9,6 +9,7 @@ from settings import ANIMATION_LAG_2, ANIMATION_LAG_3, ANIMATION_LAG_4
 NEUTRAL = 0
 WALKING = 1
 
+
 class GFX(object):
     def __init__(self, obj, state=NEUTRAL, lag=1):
         self.obj = obj
@@ -22,19 +23,27 @@ class GFX(object):
         self.surf.set_colorkey((0, 0, 0))
 
         if type(self.frames) == tuple:
-            pygame.draw.rect(self.surf, self.frames[1], self.frames[0])
+            rect = self.frames[0]
+            color = self.frames[1]
+            s = pygame.Surface(rect.size)
+            s.set_alpha(color.a)
+            s.fill(color)
+            self.surf.blit(s, rect.topleft)
 
-        else:
+        elif type(self.frames) == dict:
             cur_frames = self.frames[self.state]
             cur_frame = cur_frames[(self.frame // self.lag)  % (len(cur_frames))]
 
             for rect, color in cur_frame:
-                pygame.draw.rect(self.surf, color, rect)
+                s = pygame.Surface(rect.size)
+                s.set_alpha(color.a)
+                s.fill(color)
+                self.surf.blit(s, rect.topleft)
 
         rotated_surf = pygame.transform.rotate(self.surf, self.obj.orientation)
 
         rotated_rect = rotated_surf.get_rect()
-        rotated_rect.center = self.obj.rect.topleft
+        rotated_rect.center = self.obj.rect.center
 
         screen.blit(rotated_surf, rotated_rect)
 
