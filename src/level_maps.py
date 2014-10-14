@@ -2,7 +2,7 @@ import os
 
 from pygame import Rect
 
-from objects import Wall
+from objects import Wall, NPC
 
 from settings import MAPS_FILEPATH
 from settings import VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT
@@ -11,6 +11,7 @@ from settings import VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT
 OBJECT_CHART = {
     ' ': None,
     '|': Wall,
+    'n': NPC,
 }
 
 class Map(list):
@@ -41,7 +42,7 @@ class Map(list):
                         top  = row * VIDEO_TILE_HEIGHT
                         converted_char = converted_char(left, top)
                         self.append(converted_char)
-                except IndexError: pass
+                except KeyError: pass
                 column += 1
 
             row += 1

@@ -45,6 +45,9 @@ class Ingame(Scene):
         self.map = level_map or TestMap()
 
         self.env = [obj for obj in self.map if obj and obj.obj_type == 'env']
+        self.npc = [obj for obj in self.map if obj and obj.obj_type == 'npc']
+
+        self.walls = self.env + self.npc
 
     def main_loop(self):
         self.get_player_input()
@@ -67,7 +70,7 @@ class Ingame(Scene):
         # Player orientation
         (mx, my) = pygame.mouse.get_pos()
 
-        self.p.gfx.orientation = \
+        self.p.orientation = \
             math.degrees(math.atan2(mx - self.p.rect.left, my - self.p.rect.top))
 
         key = pygame.key.get_pressed()
@@ -107,7 +110,7 @@ class Ingame(Scene):
         pygame.display.update()
 
     def calculate_player(self):
-        self.p.update(self.env)
+        self.p.update(self.walls)
 
     def calculate_npc(self):
         pass
@@ -120,7 +123,8 @@ class Ingame(Scene):
             i.gfx.draw(self.game.screen.surface)
 
     def draw_npc(self):
-        pass
+        for i in self.npc:
+            i.gfx.draw(self.game.screen.surface)
 
     def draw_player(self):
         self.p.gfx.draw(self.game.screen.surface)

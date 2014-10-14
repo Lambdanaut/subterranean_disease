@@ -10,15 +10,14 @@ NEUTRAL = 0
 WALKING = 1
 
 class GFX(object):
-    def __init__(self, rect, state, lag):
+    def __init__(self, obj, state, lag):
         self.surface = pygame.Surface((VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT))
 
         self.state = state
         self.lag = lag
 
         self.frame = 0
-        self.orientation = 0
-        self.rect = rect
+        self.obj = obj
 
     def draw(self, screen):
         self.surf.fill((0,0,0))
@@ -34,10 +33,10 @@ class GFX(object):
             for rect, color in cur_frame:
                 pygame.draw.rect(self.surf, color, rect)
 
-        rotated_surf = pygame.transform.rotate(self.surf, self.orientation)
+        rotated_surf = pygame.transform.rotate(self.surf, self.obj.orientation)
 
         rotated_rect = rotated_surf.get_rect()
-        rotated_rect.center = (self.rect.left, self.rect.top)
+        rotated_rect.center = (self.obj.rect.topleft)
 
         screen.blit(rotated_surf, rotated_rect)
 
@@ -49,14 +48,14 @@ class GFX(object):
             self.state = state
 
 
-class WallGfx(GFX):
+class WallGFX(GFX):
     def __init__(self,
-        rect,
+        obj,
         state=NEUTRAL,
         lag=ANIMATION_LAG_4,
         wall_color=None):
 
-        super(WallGfx, self).__init__(rect, state, lag)
+        super(WallGFX, self).__init__(obj, state, lag)
 
         self.wall_color = wall_color or \
             Color(15, 15, 15)
@@ -70,14 +69,14 @@ class WallGfx(GFX):
 
 class HumanoidGFX(GFX):
     def __init__(self,
-        rect,
+        obj,
         state=NEUTRAL,
         lag=ANIMATION_LAG_4,
         head_color=None,
         body_color=None,
         hair_color=None):
 
-        super(HumanoidGFX, self).__init__(rect, state, lag)
+        super(HumanoidGFX, self).__init__(obj, state, lag)
 
         self.body_color = body_color or \
             Color(150, 25, 25)
@@ -120,3 +119,14 @@ class HumanoidGFX(GFX):
 
 class PlayerGFX(HumanoidGFX):
     pass
+
+
+class NpcGFX(HumanoidGFX):
+    def __init__(self, obj, *args, **kwargs):
+        head_color = Color(50, 200, 50)
+        body_color = Color(50, 50, 50)
+        super(NpcGFX, self).__init__(
+            obj,
+            head_color=head_color,
+            body_color=body_color) 
+

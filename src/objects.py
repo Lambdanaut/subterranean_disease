@@ -1,12 +1,14 @@
 from pygame import Rect
 
-from graphics import PlayerGFX, WallGfx
+from graphics import PlayerGFX, WallGFX, NpcGFX
 from settings import VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT
 from util import Vec2d
 
 
 class Object(object):
     obj_type = None
+
+    orientation = 0
     def __init__(self):
         pass
 
@@ -20,11 +22,11 @@ class Wall(Object):
             (left, top),
             (VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT))
 
-        self.gfx = WallGfx(self.rect)
+        self.gfx = WallGFX(self)
 
 
 class Lifeform(Object):
-    obj_type = 'life'
+    obj_type = 'npc'
 
     max_vel = Vec2d(10, 10)
     friction = 0.9
@@ -34,7 +36,7 @@ class Lifeform(Object):
 
         self.rect = Rect(
             (left, top),
-            (80, 80))
+            (60, 60))
 
         self.vel = Vec2d(0, 0)
 
@@ -81,7 +83,15 @@ class Lifeform(Object):
 
 
 class Player(Lifeform):
+    obj_type='player'
     def __init__(self, left, top):
         super(Player, self).__init__(left, top)
 
-        self.gfx = PlayerGFX(self.rect)
+        self.gfx = PlayerGFX(self)
+
+
+class NPC(Lifeform):
+    def __init__(self, left, top):
+        super(NPC, self).__init__(left, top)
+
+        self.gfx = NpcGFX(self)
