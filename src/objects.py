@@ -7,8 +7,8 @@ from util import Vec2d
 
 class Object(object):
     obj_type = None
-
     orientation = 0
+
     def __init__(self):
         pass
 
@@ -36,7 +36,7 @@ class Lifeform(Object):
 
         self.rect = Rect(
             (left, top),
-            (60, 60))
+            (60, 50))
 
         self.vel = Vec2d(0, 0)
 

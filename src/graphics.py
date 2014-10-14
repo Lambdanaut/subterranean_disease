@@ -10,14 +10,12 @@ NEUTRAL = 0
 WALKING = 1
 
 class GFX(object):
-    def __init__(self, obj, state, lag):
-        self.surface = pygame.Surface((VIDEO_TILE_WIDTH, VIDEO_TILE_HEIGHT))
-
+    def __init__(self, obj, state=NEUTRAL, lag=1):
+        self.obj = obj
         self.state = state
         self.lag = lag
 
         self.frame = 0
-        self.obj = obj
 
     def draw(self, screen):
         self.surf.fill((0,0,0))
@@ -36,7 +34,7 @@ class GFX(object):
         rotated_surf = pygame.transform.rotate(self.surf, self.obj.orientation)
 
         rotated_rect = rotated_surf.get_rect()
-        rotated_rect.center = (self.obj.rect.topleft)
+        rotated_rect.center = self.obj.rect.topleft
 
         screen.blit(rotated_surf, rotated_rect)
 
@@ -51,11 +49,9 @@ class GFX(object):
 class WallGFX(GFX):
     def __init__(self,
         obj,
-        state=NEUTRAL,
-        lag=ANIMATION_LAG_4,
         wall_color=None):
 
-        super(WallGFX, self).__init__(obj, state, lag)
+        super(WallGFX, self).__init__(obj)
 
         self.wall_color = wall_color or \
             Color(15, 15, 15)
@@ -85,12 +81,12 @@ class HumanoidGFX(GFX):
         self.hair_color = hair_color or \
             Color(20, 50, 50)
 
-        self.body1_rect = Rect(10, 20, 60, 40)
-        self.body2_rect = Rect(10, 27, 60, 40)
-        self.head1_rect = Rect(25, 45, 30, 30)
-        self.head2_rect = Rect(25, 50, 30, 30)
-        self.hair1_rect = Rect(25, 40, 30, 30)
-        self.hair2_rect = Rect(25, 44, 30, 30)
+        self.body1_rect = Rect(0, 0, 60, 40)
+        self.body2_rect = Rect(0, 7, 60, 40)
+        self.head1_rect = Rect(15, 26, 30, 30)
+        self.head2_rect = Rect(15, 29, 30, 30)
+        self.hair1_rect = Rect(15, 20, 30, 30)
+        self.hair2_rect = Rect(15, 25, 30, 30)
 
         self.frames = {
             NEUTRAL: [
@@ -114,7 +110,7 @@ class HumanoidGFX(GFX):
             ],
         }
 
-        self.surf = pygame.Surface((80, 80))
+        self.surf = pygame.Surface((60, 60))
 
 
 class PlayerGFX(HumanoidGFX):
